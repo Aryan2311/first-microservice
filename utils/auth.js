@@ -31,6 +31,7 @@ export const authenticateUser = async (req, res, next) => {
     try {
         const decoded = verifyToken(token);
         req.user = decoded;
+        console.log("Authenticated user:", req.user);
         next();
     } catch (error) {
         return res.status(403).json({ message: 'Failed to authenticate token' });

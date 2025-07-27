@@ -1,20 +1,14 @@
-import express from 'express';
-import CustomerRepository from '../database/repository/Customer_Repository.js';
+import Repository from '../database/repository/Product_Repository.js';
 
 
 export default class ProductService {
 
     constructor() {
-        this.repository = CustomerRepository;
+        this.repository = Repository;
     }
 
-    async createProduct(name, price, description) {
-        const newProduct = {
-            name,
-            price,
-            description
-        };
-        const response = await this.repository.CreateProduct(newProduct);
+    async createProduct(productDetails) {
+        const response = await this.repository.CreateProduct(productDetails);
         return { data: response };
     }
 
