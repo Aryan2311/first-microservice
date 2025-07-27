@@ -65,6 +65,10 @@ export default class CustomerService {
             const wishlistResult = await this.repository.AddToWishlist(customerId, product);        
            return FormateData(wishlistResult);
     }
+    async RemoveFromWishlist(customerId, productId) {
+        const wishlistResult = await this.repository.RemoveFromWishlist(customerId, productId);
+        return wishlistResult;
+    }
 
 
 }
