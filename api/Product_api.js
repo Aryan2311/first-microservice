@@ -1,6 +1,6 @@
 import express from 'express';
-export default router = express.Router();
-import { authenticateUser } from '../utils/auth';
+const router = express.Router();
+import { authenticateUser } from '../utils/auth.js';
 import ProductService from '../services/Product_Service.js';
 import CustomerService from '../services/Customer_Service.js';
 
@@ -10,9 +10,9 @@ const customerService = new CustomerService();
     router.post('/create', authenticateUser, async(req,res,next) => {
         
         try {
-            const { name, desc, type, unit,price, available, suplier, banner } = req.body; 
+            const { name, desc, type, price } = req.body; 
             // validation
-            const { data } =  await service.CreateProduct({ name, desc, type, unit,price, available, suplier, banner });
+            const { data } =  await service.createProduct({ name, desc, type, price });
             return res.json(data);
             
         } catch (err) {
@@ -21,22 +21,13 @@ const customerService = new CustomerService();
         
     });
 
-    router.get('/:id', async(req,res,next) => {
-        try {
-            const { id } = req.params;
-            const product = await service.getProductById(id);
-            return res.json(product);
-        } catch (err) {
-            next(err);
-        }
-    });
-
     router.get('/category/:type', async(req,res,next) => {
         
         const type = req.params.type;
         
         try {
-            const { data } = await service.GetProductsByCategory(type)
+            const  data  = await service.getProductsByCategory(type)
+            console.log("Products in category:", data);
             return res.status(200).json(data);
 
         } catch (err) {
@@ -64,4 +55,14 @@ const customerService = new CustomerService();
         }
        
     });
+    router.get('/:id', async(req,res,next) => {
+        try {
+            const { id } = req.params;
+            const product = await service.getProductById(id);
+            return res.json(product);
+        } catch (err) {
+            next(err);
+        }
+    });
 
+export default router;

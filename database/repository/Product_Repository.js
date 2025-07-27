@@ -2,16 +2,12 @@
 import Product from '../models/Product_Model.js';
 class ProductRepository {
   async CreateProduct({
-    name,desc,type,unit,price,available,suplier,banner}) {
+    name,desc,type,price}) {
       const product = new Product({
         name,
         desc,
         type,
-        unit,
         price,
-        available,
-        suplier,
-        banner,
       });
 
       const productResult = await product.save();
@@ -33,13 +29,13 @@ class ProductRepository {
     }
 
     async FindByCategory(category) {
-      const products = await ProductModel.find({ type: category });
+      const products = await Product.find({ type: category });
       return products;
   }
 
     async FindSelectedProducts(selectedIds) {
-    return await ProductModel.find({ _id: { $in: selectedIds } });
+    return await Product.find({ _id: { $in: selectedIds } });
     }
 
 }
-export default ProductRepository;
+export default new ProductRepository();
