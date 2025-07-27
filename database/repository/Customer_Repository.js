@@ -1,6 +1,6 @@
 import express from 'express';
 import Customer from '../models/Customer_Model.js';
-
+import AddressModel from '../models/Address_Model.js';
 class CustomerRepository {
     CreateCustomer = async (username, email, password) => {
     const newCustomer = new Customer({
@@ -39,12 +39,11 @@ class CustomerRepository {
     }
 
     FindCustomerById = async (id) => { 
-        const customer = await Customer.findById(id
+        const customer = await Customer.findById(id)
             .populate('cart.product')
             .populate('address')
             .populate('wishlist')
-            .populate('orders')
-        );
+            .populate('orders');
         if (!customer) {
             throw new Error('User not found');
         }

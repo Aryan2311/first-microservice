@@ -1,7 +1,7 @@
 import express from 'express';
-export default router = express.Router();
+const router = express.Router();
 import CustomerService from '../services/Customer_Service.js';
-import { UserAuth } from '../utils/auth.js';
+import { authenticateUser } from '../utils/auth.js';
 import ProductService from '../services/Product_Service.js';
 const service = new CustomerService();
 const productService = new ProductService();
@@ -19,8 +19,8 @@ router.post('/signup', async (req, res, next)=>{
 });
 router.post('/login', async (req, res, next)=>{
     try{
-        const {username, password} = req.body;
-        const response = await service.login(username, password);
+        const {email, password} = req.body;
+        const response = await service.login(email, password);
         res.json(response);
     }
     catch(err){
@@ -28,14 +28,14 @@ router.post('/login', async (req, res, next)=>{
     }
 });
 
-router.put('/cart',UserAuth, async (req,res,next) => {
+
+router.put('/cart',authenticateUser, async (req,res,next) => {
     
     const { _id, qty } = req.body;
     
     try {     
-        const product = await productService.getProductById(_id);
 
-        const result =  await service.ManageCart(req.user._id, product, qty, false);
+        const result =  await service.ManageCart(req.user.id, _id, qty, false);
 
         return res.status(200).json(result);
         
@@ -44,20 +44,18 @@ router.put('/cart',UserAuth, async (req,res,next) => {
     }
 });
 
-router.delete('/cart/:id',UserAuth, async (req,res,next) => {
+router.delete('/cart/:id',authenticateUser, async (req,res,next) => {
 
-    const { _id } = req.user;
-
+    const { id } = req.params;
     try {
-        const product = await productService.getProductById(req.params.id);
-        const result = await service.ManageCart(_id, product, 0 , true);             
+        const result = await service.ManageCart(req.user.id, id, 0 , true);             
         return res.status(200).json(result);
     } catch (err) {
         next(err)
     }
 });
 
-router.post("/address", UserAuth, async (req, res, next) => {
+router.post("/address", authenticateUser, async (req, res, next) => {
     try {
     const { _id } = req.user;
 
@@ -76,41 +74,42 @@ router.post("/address", UserAuth, async (req, res, next) => {
     }
 });
 
-router.get('/profile', UserAuth, async (req, res, next) => {
+router.get('/profile', authenticateUser, async (req, res, next) => {
     try {
-        const customer = await service.GetCustomerDetails(req.user._id);
+        const customer = await service.GetCustomerDetails(req.user.id);
         return res.status(200).json(customer);
     } catch (err) {
         next(err);
     }
 });
 
-router.get('/wishlist', UserAuth, async (req, res, next) => {
+router.get('/wishlist', authenticateUser, async (req, res, next) => {
     try {
-        const wishListItems = await service.GetWishList(req.user._id);
+        const wishListItems = await service.GetWishList(req.user.id);
         return res.status(200).json(wishListItems);
     } catch (err) {
         next(err);
     }
 });
-router.post('/wishlist', UserAuth, async (req, res, next) => {
+router.post('/wishlist', authenticateUser, async (req, res, next) => {
     try {
         const { productId } = req.body;
-        const wishlistResult = await service.AddToWishlist(req.user._id, productId);
+        const wishlistResult = await service.AddToWishlist(req.user.id, productId);
         return res.status(200).json(wishlistResult);
     } catch (err) {
         next(err);
     }
 });
-router.delete('/wishlist/:productId', UserAuth, async (req, res, next) => {
+router.delete('/wishlist/:productId', authenticateUser, async (req, res, next) => {
     try {
         const { productId } = req.params;
-        const wishlistResult = await service.RemoveFromWishlist(req.user._id, productId);
+        const wishlistResult = await service.RemoveFromWishlist(req.user.id, productId);
         return res.status(200).json(wishlistResult);
     } catch (err) {
         next(err);
     }
 });
+export default router;
 
 
 

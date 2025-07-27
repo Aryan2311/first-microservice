@@ -21,7 +21,7 @@ export default class CustomerService {
     }
 
     async login(email, password) {
-        const customer = await CustomerRepository.FindCustomerByEmail({ email });
+        const customer = await CustomerRepository.FindCustomerByEmail( email );
         const isMatch = await comparePassword(password, customer.password);
         if (!isMatch) {
             throw new Error('Invalid password');
@@ -44,9 +44,9 @@ export default class CustomerService {
 
     }
 
-    async ManageCart(customerId, product, qty, isDelete) {
+    async ManageCart(customerId, productId, qty, isDelete) {
         
-        const cartResult = await this.repository.AddCartItem(customerId, product, qty, isDelete);
+        const cartResult = await this.repository.updateCartItem(customerId, productId, qty, isDelete);
         return cartResult;     
     }
     async GetCustomerDetails(id) {
@@ -61,9 +61,9 @@ export default class CustomerService {
             return wishListItems;
         }
 
-    async AddToWishlist(customerId, product){
-            const wishlistResult = await this.repository.AddToWishlist(customerId, product);        
-           return FormateData(wishlistResult);
+    async AddToWishlist(customerId, productId){
+           const wishlistResult = await this.repository.AddToWishlist(customerId, productId);        
+           return wishlistResult;
     }
     async RemoveFromWishlist(customerId, productId) {
         const wishlistResult = await this.repository.RemoveFromWishlist(customerId, productId);
