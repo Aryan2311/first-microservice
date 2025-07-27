@@ -30,7 +30,7 @@ const CustomerSchema = new mongoose.Schema({
         ref: 'product',
         require: true
     }],
-    order : [{
+    orders : [{
         type : Schema.Types.ObjectId,
         ref: 'order',
         require: true
